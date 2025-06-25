@@ -1,0 +1,33 @@
+{
+    "pieces": {
+        "black-rook": "./res/assets/black-rook.png",
+        "black-bishop": "./res/assets/black-bishop.png",
+        "black-knight": "./res/assets/black-knight.png",
+        "black-pawn": "./res/assets/black-pawn.png",
+        "black-king": "./res/assets/black-king.png",
+        "black-queen": "./res/assets/black-queen.png",
+        "white-rook": "./res/assets/white-rook.png",
+        "white-bishop": "./res/assets/white-bishop.png",
+        "white-knight": "./res/assets/white-knight.png",
+        "white-pawn": "./res/assets/white-pawn.png",
+        "white-king": "./res/assets/white-king.png",
+        "white-queen": "./res/assets/white-queen.png"
+    },
+
+    "board": {
+        "chessboard": "./res/assets/chessboard-main.png"
+    },
+
+    "sounds": {
+        "capture": "./res/audio/capture.mp3",
+        "checkmate": "./res/audio/game-end.mp3",
+        "castle": "./res/audio/castle.mp3",
+        "game-end": "./res/audio/game-end.mp3",
+        "game-start": "./res/audio/game-start.mp3",
+        "illegal": "./res/audio/illegal.mp3",
+        "move-check": "./res/audio/move-check.mp3",
+        "move-self": "./res/audio/move-self.mp3",
+        "promote": "./res/audio/promote.mp3"
+    }
+
+}
