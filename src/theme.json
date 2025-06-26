@@ -2,13 +2,13 @@
     "pieces": {
         "black-rook": "./res/assets/black-rook.png",
         "black-bishop": "./res/assets/black-bishop.png",
-        "black-knight": "./res/assets/black-knight.png",
+        "black-night": "./res/assets/black-night.png",
         "black-pawn": "./res/assets/black-pawn.png",
         "black-king": "./res/assets/black-king.png",
         "black-queen": "./res/assets/black-queen.png",
         "white-rook": "./res/assets/white-rook.png",
         "white-bishop": "./res/assets/white-bishop.png",
-        "white-knight": "./res/assets/white-knight.png",
+        "white-night": "./res/assets/white-night.png",
         "white-pawn": "./res/assets/white-pawn.png",
         "white-king": "./res/assets/white-king.png",
         "white-queen": "./res/assets/white-queen.png"

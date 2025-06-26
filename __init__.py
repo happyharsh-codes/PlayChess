@@ -26,18 +26,18 @@ SIDE = LENGTH/8
 
 
 def get_SPRITES():
-    GAME_SPRITES["black-bishop"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-bishop"]),(SIDE, SIDE))
-    GAME_SPRITES["black-king"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-king"]),(SIDE, SIDE))
-    GAME_SPRITES["black-knight"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-knight"]),(SIDE, SIDE))
-    GAME_SPRITES["black-queen"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-queen"]),(SIDE, SIDE))
-    GAME_SPRITES["black-pawn"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-pawn"]),(SIDE, SIDE))
-    GAME_SPRITES["black-rook"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-rook"]),(SIDE, SIDE))
-    GAME_SPRITES["white-king"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-king"]),(SIDE, SIDE))
-    GAME_SPRITES["white-queen"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-queen"]),(SIDE, SIDE))
-    GAME_SPRITES["white-pawn"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-pawn"]),(SIDE, SIDE))
-    GAME_SPRITES["white-rook"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-rook"]),(SIDE, SIDE))
-    GAME_SPRITES["white-knight"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-knight"]),(SIDE, SIDE))
-    GAME_SPRITES["white-bishop"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-bishop"]),(SIDE, SIDE))
+    GAME_SPRITES["black-bishop"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-bishop"]),(SIDE, SIDE)).convert_alpha()
+    GAME_SPRITES["black-king"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-king"]),(SIDE, SIDE)).convert_alpha()
+    GAME_SPRITES["black-night"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-night"]),(SIDE, SIDE)).convert_alpha()
+    GAME_SPRITES["black-queen"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-queen"]),(SIDE, SIDE)).convert_alpha()
+    GAME_SPRITES["black-pawn"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-pawn"]),(SIDE, SIDE)).convert_alpha()
+    GAME_SPRITES["black-rook"] = pygame.transform.scale(pygame.image.load(piecesTheme["black-rook"]),(SIDE, SIDE)).convert_alpha()
+    GAME_SPRITES["white-king"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-king"]),(SIDE, SIDE)).convert_alpha()
+    GAME_SPRITES["white-queen"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-queen"]),(SIDE, SIDE)).convert_alpha()
+    GAME_SPRITES["white-pawn"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-pawn"]),(SIDE, SIDE)).convert_alpha()
+    GAME_SPRITES["white-rook"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-rook"]),(SIDE, SIDE)).convert_alpha()
+    GAME_SPRITES["white-night"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-night"]),(SIDE, SIDE)).convert_alpha()
+    GAME_SPRITES["white-bishop"] = pygame.transform.scale(pygame.image.load(piecesTheme["white-bishop"]),(SIDE, SIDE)).convert_alpha()
     return GAME_SPRITES
 
 def get_SOUNDS():
@@ -47,7 +47,8 @@ def get_SOUNDS():
     GAME_SOUNDS["game-start"] = pygame.mixer.Sound(soundsTheme["game-start"])
     GAME_SOUNDS["check"] = pygame.mixer.Sound(soundsTheme["move-check"])
     GAME_SOUNDS["move"] = pygame.mixer.Sound(soundsTheme["move-self"])
-    GAME_SOUNDS["promote"] = pygame.mixer.Sound(soundsTheme["promote"])
+    GAME_SOUNDS["enpassant"] = pygame.mixer.Sound(soundsTheme["capture"])
+    GAME_SOUNDS["promotion"] = pygame.mixer.Sound(soundsTheme["promote"])
     GAME_SOUNDS["castle"] = pygame.mixer.Sound(soundsTheme["castle"])
     GAME_SOUNDS["illegal"] = pygame.mixer.Sound(soundsTheme["illegal"])
     return GAME_SOUNDS
