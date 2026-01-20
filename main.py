@@ -4,6 +4,8 @@ from pygame.locals import*
 import os, sys
 from __init__ import*
 from chess import ChessSprite
+from buttons import Buttons
+from scrollbox import Scrollbox
 from chessboard import Chessboard
 from chessbot import Bot
 
@@ -67,13 +69,29 @@ class Game:
 
     def mainGame(self):
         self.__initializeChessGame__()
-        group = pygame.sprite.Group()
 
-        scroll_offset = 0
-
-
+        #pieces
+        pieces = pygame.sprite.Group()
         for piece in self.chessSprites:
-            group.add(piece)
+            pieces.add(piece)
+
+        #buttons
+        buttons = pygame.sprite.Group()
+        def new_game():
+            print("new game called")
+            self.__initializeChessGame__()
+            self.chess = Chessboard()
+            pieces.empty()
+            for piece in self.chessSprites:
+                pieces.add(piece)    
+        buttons.add(Buttons((BOARD_RECT.topright[0] + 50, 800), new_game, width=300, height=80, label="New Game", color=(255, 255, 255, 255), bgcolor=(129, 186, 76, 225)))
+
+        #scrollbox
+        scrollbox_group = pygame.sprite.Group()
+        scrollbox = Scrollbox((BOARD_RECT.topright[0] + 50, 200), 300, 400, (31, 31, 31, 200))
+        scrollbox_group.add(scrollbox)
+
+
         background = pygame.Surface((SCREENWIDTH, SCREENHEIGHT))
         background.fill((23, 23, 23, 180))
 
@@ -88,11 +106,15 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
-            group.update(events, self.chess, self)
+            pieces.update(events, self.chess, self)
+            buttons.update(events)
+            scrollbox_group.update(events)
             self.updatePieces()
             SCREEN.blit(background, (0,0))
             SCREEN.blit(BOARD, BOARD_RECT)
-            group.draw(SCREEN)
+            pieces.draw(SCREEN)
+            buttons.draw(SCREEN)
+            scrollbox.draw(SCREEN)
             pygame.display.update()
 
 def runGame():

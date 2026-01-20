@@ -29,6 +29,7 @@ class Chessboard:
         self.play_turn = "white"
         self.moveNo = 0
         self.__moveHistory = ""
+        self.scrollbox = ""
 
         self.__initializeBoard__()
 
@@ -123,7 +124,7 @@ class Chessboard:
             boardcopy[index] = None
             boardcopy[move] = piece
             for pieces in boardcopy:
-                if pieces and pieces.type in ["queen", "rook", "bishop"] and pieces.color != piece.color:
+                if pieces and pieces.color != piece.color:
                     oppPlainMoves = self.__getPlainMoves(pieces, boardcopy)
                     for oppMoves in oppPlainMoves:
                         if boardcopy[oppMoves] and boardcopy[oppMoves].type == "king":
@@ -299,11 +300,11 @@ class Chessboard:
         # NOTE: does not check for promotion as user response it required: handled explitictly -> returns move type = "promotion pending" then you have piece manully call the promote function with the user input and then you'll get the full move summary
         # generates move notations 
         # returns move summarty move["type"] can be from ["move", "capture", "check", "checkmate", "enpassant", "promotion"]
-        move = {"piece": None, "initial": piece.pos, "final": loc, "type": None,"check": False, "checkmate": False, "notation": ""}
+        move = {"piece": None, "initial": piece.pos, "final": loc, "type": "","check": False, "checkmate": False, "notation": ""}
 
         #invalid move
         if loc not in self.getLegalMoves(piece):
-            move['type'] = "illegal"
+            move['type'] += "illegal"
             return move
         
         #normal move
@@ -313,7 +314,6 @@ class Chessboard:
         notation = ""
 
         move['piece'] = piece.color+ " " +piece.type
-        move["type"] = "move"
         if piece.type == "night" or piece.type == "rook":
             for i in self.__chessboard:
                 if i and i.color == piece.color and loc in self.getLegalMoves(i):
@@ -329,15 +329,15 @@ class Chessboard:
         elif piece.type != "pawn":
             notation = piece.type[0].upper() + notation
 
-        #Capture Check
+        #Capture:
         if self.__chessboard[loc_index] != None:
-            move["type"] = "capture"
+            move["type"] += " capture"
             notation =  notation + "x" + loc
             if piece.type == "pawn":
                 notation = board[pos_index][0] + "x" + loc
         else: notation += loc
 
-        #enPassant check:
+        #enPassant:
         if piece.type == "pawn" and self.__chessboard[board.index(loc)] == None and piece.pos[0] != loc[0]:
             if loc[1] == "3":
                 capturePiece = loc[0] + "4"
@@ -345,7 +345,7 @@ class Chessboard:
                 capturePiece = loc[0] + "5"
 
             self.__chessboard[board.index(capturePiece)] = None
-            move["type"] = "enpassant"
+            move["type"] += " enpassant"
             notation = piece.pos[0] + "x" +loc
 
         #Now moving the piece
@@ -353,9 +353,9 @@ class Chessboard:
         self.__chessboard[loc_index] = piece
         self.__chessboard[pos_index] = None
 
-        #castelling Check
+        #castelling:
         if piece.type == "king" and abs(loc_index - pos_index) == 2:
-            move["type"] = "castle"
+            move["type"] += " castle"
             if (loc_index - pos_index) == -2:
                 notation = "0-0-0"
                 if piece.color == "black":
@@ -405,11 +405,11 @@ class Chessboard:
                 
         #promotions are not dealt here they have been dealt explicitly
         if piece.type == "pawn" and (loc[1] == "8" or loc[1] == "1"):
-            move["type"] = "promotion pending"
+            move["type"] += " promotion pending"
 
         #checks and checkmates
         if self.__isBoardCheck():
-            move["type"] = "check"
+            move["type"] += " check"
             move["check"] = True
             notation += "+"
             if piece.color == "black":
@@ -426,7 +426,7 @@ class Chessboard:
             if allLegalMoves == []:
                 #checkmated Haha >_< 
                 notation = notation[:-1] + "#"
-                move["type"] = "checkmate"
+                move["type"] += " checkmate"
                 move["checkmate"] = True
                 print("checkmated haha")
                 if piece.color == "black":
@@ -444,10 +444,12 @@ class Chessboard:
             if newpieces and newpieces.color != self.play_turn:
                 newpieces.setLegalMoves([])
 
+        if not move["type"]:
+            move["type"] = "move"
         move["notation"] = notation
-        self.moveHistory(move["notation"])
+        self.moveHistory(move["notation"], self.scrollbox)
 
-        if not move["type"] == "promotion pending":
+        if not "promotion pending" in move["type"]:
             print("===== CHESSBOARD =====")
             for i in range(8):
                 for j in range(8):
@@ -459,15 +461,16 @@ class Chessboard:
             print(">>>> MOVE: ", move)
         return move
 
-
-    def moveHistory(self, notation):
+    def moveHistory(self, notation, scrollbox):
         self.moveNo += 1
         if self.play_turn == "black":
             #add white move
             self.__moveHistory += f" {self.moveNo}.{notation}"
+            scrollbox.add_button(self.moveNo, "white", notation)
         else:
             #add black move
             self.__moveHistory += f" {notation}"
+            scrollbox.add_button(self.moveNo, "black", notation)
 
     def getGameHistory(self):
         return self.__moveHistory
@@ -482,10 +485,9 @@ class Chessboard:
         return moves
 
 
-
 class ChessPiece():
 
-    def __init__(self, type, color, postion = None):
+    def __init__(self, type, color, position):
         """Type: <pawn bishop rook queen king night>. Color: <black white>. Position: chess notiaion"""
         if type.lower() not in ["pawn", "bishop", "queen", "king", "night", "rook"]:
             raise "Invalid chess piece error"
@@ -493,13 +495,12 @@ class ChessPiece():
             raise "Invalid chess color"
         self.type = type.lower()
         self.color = color.lower()
-        self.movement = []
         self.captureMovement = "same" # only for pawns: 'same' for all piece so it will be ignored, but for pawn can be : -9, -7, +7, +9 
         self.moveRange = None
 
         self.__moveHistory = []
         self.__legalMoves = []
-        self.pos = postion
+        self.pos = position
         self.setMovement()
 
     def setMovement(self):

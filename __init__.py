@@ -21,7 +21,7 @@ PIECES = []
 pygame.init()
 BOARD = pygame.transform.scale(pygame.image.load(currentTheme["board"]["chessboard"]).convert_alpha(),(SCREENHEIGHT, SCREENHEIGHT))
 LENGTH = BOARD.get_width()
-BOARD_RECT = BOARD.get_rect(topleft = ((SCREENWIDTH-LENGTH) // 2, 0))
+BOARD_RECT = BOARD.get_rect(topleft = ((SCREENWIDTH-LENGTH) // 3, 0))
 SIDE = LENGTH/8
 
 
@@ -41,16 +41,16 @@ def get_SPRITES():
     return GAME_SPRITES
 
 def get_SOUNDS():
-    GAME_SOUNDS["capture"] = pygame.mixer.Sound(soundsTheme["capture"])
+    GAME_SOUNDS["illegal"] = pygame.mixer.Sound(soundsTheme["illegal"])
     GAME_SOUNDS["checkmate"] = pygame.mixer.Sound(soundsTheme["game-end"])
-    GAME_SOUNDS["game-end"] = pygame.mixer.Sound(soundsTheme["game-end"])
-    GAME_SOUNDS["game-start"] = pygame.mixer.Sound(soundsTheme["game-start"])
     GAME_SOUNDS["check"] = pygame.mixer.Sound(soundsTheme["move-check"])
-    GAME_SOUNDS["move"] = pygame.mixer.Sound(soundsTheme["move-self"])
+    GAME_SOUNDS["capture"] = pygame.mixer.Sound(soundsTheme["capture"])
     GAME_SOUNDS["enpassant"] = pygame.mixer.Sound(soundsTheme["capture"])
     GAME_SOUNDS["promotion"] = pygame.mixer.Sound(soundsTheme["promote"])
     GAME_SOUNDS["castle"] = pygame.mixer.Sound(soundsTheme["castle"])
-    GAME_SOUNDS["illegal"] = pygame.mixer.Sound(soundsTheme["illegal"])
+    GAME_SOUNDS["move"] = pygame.mixer.Sound(soundsTheme["move-self"])
+    GAME_SOUNDS["game-end"] = pygame.mixer.Sound(soundsTheme["game-end"])
+    GAME_SOUNDS["game-start"] = pygame.mixer.Sound(soundsTheme["game-start"])
     return GAME_SOUNDS
 
 GAME_SPRITES = get_SPRITES()

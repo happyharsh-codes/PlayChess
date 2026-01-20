@@ -114,17 +114,17 @@ class ChessSprite(pygame.sprite.Sprite):
                 if myMove in legalMoves:
                     #process
                     move = chess.move( chess.getPiece(self.position) , f"{file}{rank}")
-                    if move["type"] == "illegal":
+                    if "illegal" in move["type"]:
                         self.moveToPosition(self.position, 20)
                         GAME_SOUNDS["illegal"].play()
                         return
                     
-                    if move["type"] == "capture" or "x" in move["notation"]:
+                    if "capture" in move["type"] or "x" in move["notation"]:
                         for sprite in game.chessSprites:
                             if sprite.position == move["final"] and sprite.color != self.color:
                                 sprite.kill()
 
-                    if move["type"] == "castle":
+                    if "castle" in move["type"]:
                         if move["final"] == "g1":
                             target = "h1"
                             target_dest = "f1"
@@ -143,7 +143,7 @@ class ChessSprite(pygame.sprite.Sprite):
                                 sprite.moveToPosition(target_dest, 15)
                                 break
 
-                    if move["type"] == "enpassant":
+                    if "enpassant" in move["type"]:
                         if move["final"][1] == "3":
                             target = move["final"][0] + "4"
                         elif move["final"][1] == "6":
@@ -153,17 +153,21 @@ class ChessSprite(pygame.sprite.Sprite):
                                 sprite.kill()
                                 break
                     
-                    if move["type"] == "checkmate":
+                    if "checkmate" in move["type"]:
                         print("game Over")
 
-                    if move["type"] == "promotion pending":
+                    if "promotion pending" in move["type"]:
                         user_promote_to_piece = game.promotionScreen(chess.play_turn)
                         move = chess.promote(move, move["final"], user_promote_to_piece, move["notation"])
                         self.image = GAME_SPRITES[user_promote_to_piece]
                     
                     self.position = move["final"]
                     self.moveToPosition(self.position, 20)
-                    GAME_SOUNDS[move["type"]].play()
+                    for sound in GAME_SOUNDS:
+                        if sound in move['type']:
+                            GAME_SOUNDS[sound].play()
+                    if "checkmate" in move["type"]:
+                        GAME_SOUNDS["game-end"].play()
 
                 else:
                     self.moveToPosition(self.position, 20)
