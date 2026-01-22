@@ -54,20 +54,6 @@ class ChessSprite(pygame.sprite.Sprite):
         self.veloctiyY = velocity*(j/mod)
         self.moving = True
 
-    def highLightMoves(self, legalMoves):
-        pass
-        # overlay = pygame.Surface((SCREEN.get_width(), SCREEN.get_height()), pygame.SRCALPHA)
-        # for move in legalMoves:
-        #     rank = int(move[1])
-        #     file = ord(move[0]) - 97
-
-        #     x = BOARD_RECT.x + SIDE*file + SIDE//2
-        #     y = SIDE*(8-rank) + SIDE//2
-            
-        #     pygame.draw.circle(overlay, (225, 0, 0, 100), (x,y), SIDE//3)
-        #     SCREEN.blit(overlay, (0,0))
-        #     pygame.display.update()
-
     def keepMoving(self):
         rank = int(self.position[1])
         file = ord(self.position[0]) - 97
@@ -81,20 +67,37 @@ class ChessSprite(pygame.sprite.Sprite):
         if abs(x - self.rect.x) < 10 or abs(y - self.rect.y) < 10:
             self.setPosition()
 
+    def draw_highlights(self, chess, surface):
+        for square in chess.getLegalMoves(chess.getPiece(self.position)):
+            ring_surf = pygame.Surface((SIDE, SIDE), pygame.SRCALPHA)
+            file = ord(square[0]) - 97
+            rank = 8 - int(square[1])
+
+            x = BOARD_RECT.x + file * SIDE
+            y = BOARD_RECT.y + rank * SIDE
+
+            piece = chess.getPiece(square)
+            if piece:
+                pygame.draw.circle(ring_surf, (48, 46, 43, 100),(SIDE // 2, SIDE // 2),SIDE // 2,width=6)
+            else:
+                pygame.draw.circle(ring_surf, (48, 46, 43, 100), (SIDE // 2, SIDE // 2), SIDE //6)
+            surface.blit(ring_surf, (x, y))
+
+
     def update(self, events: pygame.event, chess, game):
 
         for event in events:
 
             if self.grabbed:
-                legalMoves = chess.getLegalMoves(chess.getPiece(self.position))
-                self.highLightMoves(legalMoves)
+                pass
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.rect.collidepoint(event.pos):
                     if self.moving:
                         return
                     self.grabbed = True
-                    print("GRABBED PIECE: ", chess.getPiece(self.position).color + chess.getPiece(self.position).type, self.position, chess.getLegalMoves(chess.getPiece(self.position)))
+                    legalMoves = chess.getLegalMoves(chess.getPiece(self.position))
+                    print("GRABBED PIECE: ", chess.getPiece(self.position).color + chess.getPiece(self.position).type, self.position,legalMoves)
 
             elif event.type == pygame.MOUSEMOTION and self.grabbed:
                 self.rect.center = event.pos
@@ -113,7 +116,7 @@ class ChessSprite(pygame.sprite.Sprite):
                 myMove = f"{file}{rank}"
                 if myMove in legalMoves:
                     #process
-                    move = chess.move( chess.getPiece(self.position) , f"{file}{rank}")
+                    move = chess.move(chess.getPiece(self.position) , f"{file}{rank}")
                     if "illegal" in move["type"]:
                         self.moveToPosition(self.position, 20)
                         GAME_SOUNDS["illegal"].play()
@@ -168,6 +171,9 @@ class ChessSprite(pygame.sprite.Sprite):
                             GAME_SOUNDS[sound].play()
                     if "checkmate" in move["type"]:
                         GAME_SOUNDS["game-end"].play()
+
+                    #add button
+                    game.add_move(chess.moveNo, chess.play_turn, move['notation'])
 
                 else:
                     self.moveToPosition(self.position, 20)

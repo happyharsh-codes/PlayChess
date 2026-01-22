@@ -8,6 +8,7 @@ board = ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8",
          "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3",
          "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2",
          "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
+pieceEmoji = {"wk": "♔", "wq": "♕", "wn": "♘", "wb": "♗", "wr": "♖", "wp": "♙", "bk": "♚", "bq": "♛", "bn": "♞", "bb": "♝", "br": "♜", "bp": "♟"}
 
 class Chessboard:
 
@@ -29,7 +30,6 @@ class Chessboard:
         self.play_turn = "white"
         self.moveNo = 0
         self.__moveHistory = ""
-        self.scrollbox = ""
 
         self.__initializeBoard__()
 
@@ -44,8 +44,7 @@ class Chessboard:
         for i in range(8):
             for j in range(8):
                 if self.__chessboard[i*8 + j]:
-                    print(self.__chessboard[i*8 +j].color[0] + self.__chessboard[i*8 + j].type[0] , end=" ")
-
+                    print(pieceEmoji[self.__chessboard[i*8 +j].color[0] + self.__chessboard[i*8 + j].type[0]],end="")
                 else: print("   ", end="")
             print()
 
@@ -106,8 +105,6 @@ class Chessboard:
             pass
 
         #enpassant
-
-
 
         return plainMoves
 
@@ -231,7 +228,7 @@ class Chessboard:
         piece = piece.split("-")[1]
         notation = prevNotation + "=" + piece[0].upper()
         pending_move["type"] = "promotion"
-        piece = ChessPiece(piece, color=color, postion=loc)
+        piece = ChessPiece(piece, color=color, position=loc)
         loc = board.index(loc)
         self.__chessboard[loc] = piece
         pieceLegalMoves = self.__generateLegalMoves(piece)
@@ -283,7 +280,7 @@ class Chessboard:
         for i in range(8):
             for j in range(8):
                 if self.__chessboard[i*8 + j]:
-                    print(self.__chessboard[i*8 +j].color[0] + self.__chessboard[i*8 + j].type[0], end=" ")
+                    print(pieceEmoji[self.__chessboard[i*8 +j].color[0] + self.__chessboard[i*8 + j].type[0]],end="")
                 else:
                     print("   ", end="")
             print()
@@ -423,7 +420,10 @@ class Chessboard:
                 if newpiece and newpiece.color != piece.color:
                     allLegalMoves.extend(newpiece.getLegalMoves())
 
-            if allLegalMoves == []:
+            for legalMoves in allLegalMoves:
+                if legalMoves:
+                    break
+            else:
                 #checkmated Haha >_< 
                 notation = notation[:-1] + "#"
                 move["type"] += " checkmate"
@@ -447,30 +447,28 @@ class Chessboard:
         if not move["type"]:
             move["type"] = "move"
         move["notation"] = notation
-        self.moveHistory(move["notation"], self.scrollbox)
+        self.moveHistory(move["notation"])
 
         if not "promotion pending" in move["type"]:
             print("===== CHESSBOARD =====")
             for i in range(8):
                 for j in range(8):
                     if self.__chessboard[i*8 + j]:
-                        print(self.__chessboard[i*8 +j].color[0] + self.__chessboard[i*8 + j].type[0], end=" ")
+                        print(pieceEmoji[self.__chessboard[i*8 +j].color[0] + self.__chessboard[i*8 + j].type[0]], end=" ")
                     else:
                         print("   ", end="")
                 print()
             print(">>>> MOVE: ", move)
         return move
 
-    def moveHistory(self, notation, scrollbox):
-        self.moveNo += 1
+    def moveHistory(self, notation):
         if self.play_turn == "black":
+            self.moveNo += 1
             #add white move
             self.__moveHistory += f" {self.moveNo}.{notation}"
-            scrollbox.add_button(self.moveNo, "white", notation)
         else:
             #add black move
             self.__moveHistory += f" {notation}"
-            scrollbox.add_button(self.moveNo, "black", notation)
 
     def getGameHistory(self):
         return self.__moveHistory
